@@ -159,8 +159,12 @@ def get_city_or_county(city_and_county_data, parent_administrative_division_id):
         administrative_type_id = None
     else:
         administrative_type_id = administrative_type_dao.save_or_find_type_by_name(city_and_county_data[4]).id
-    administrative_division = AdministrativeDivision(0, city_or_county_data_name, administrative_level_id,administrative_type_id, city_or_county_data_code,parent_administrative_division_id)
-    return administrative_division_dao.save(administrative_division)
+    # TODO 可以验证数据是否正确
+    administrativeDivision = administrative_division_dao.find_administrative_division_by_name(city_or_county_data_name)
+    if administrativeDivision is None:
+        administrative_division = AdministrativeDivision(0, city_or_county_data_name, administrative_level_id,administrative_type_id, city_or_county_data_code,parent_administrative_division_id)
+        administrativeDivision = administrative_division_dao.save(administrative_division)
+    return administrativeDivision
 
 
 def get_city_or_county_data_list(province_name,city_name = None):
