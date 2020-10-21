@@ -77,8 +77,8 @@ def get_province(province_data, parent_administrative_division_id):
             administrative_level_id = administrative_level_dao.save_or_find_level_by_name("省").id
             administrative_type_id = administrative_type_dao.save_or_find_type_by_name("省级").id
         elif administrative_level_name == "市":
-            administrative_level_id = administrative_level_dao.save_or_find_level_by_name("市").id
-            administrative_type_id = administrative_type_dao.save_or_find_type_by_name("省级").id
+            administrative_level_id = administrative_level_dao.save_or_find_level_by_name("地级").id
+            administrative_type_id = administrative_type_dao.save_or_find_type_by_name("直辖市").id
         else:
             # 重新获取一次省名称后缀
             administrative_level_name = administrativeDivision.name[
@@ -163,6 +163,10 @@ def get_city_or_county(city_and_county_data, parent_administrative_division_id):
     administrativeDivision = administrative_division_dao.find_administrative_division_by_name(city_or_county_data_name)
     if administrativeDivision is None:
         administrative_division = AdministrativeDivision(0, city_or_county_data_name, administrative_level_id,administrative_type_id, city_or_county_data_code,parent_administrative_division_id)
+        if administrative_type_dao.find_administrative_type_by_id(
+                administrative_division_dao.find_administrative_division_by_id(
+                    parent_administrative_division_id).administrative_type_id).name == "直辖市":
+            administrative_division.administrative_code = "01"+administrative_division.administrative_code
         administrativeDivision = administrative_division_dao.save(administrative_division)
     return administrativeDivision
 
